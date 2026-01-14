@@ -3,6 +3,8 @@ import authRouter from "./routers/authRouter";
 
 const app = express();
 
+app.use(express.json());
+
 app.get("/", (req, res) => {
   return res.json({
     success: true,
@@ -10,6 +12,6 @@ app.get("/", (req, res) => {
   });
 });
 
-app.use("/auth", authRouter)
+app.use("/auth", authRouter);
 
 export default app;
