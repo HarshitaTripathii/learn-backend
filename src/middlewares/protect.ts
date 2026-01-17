@@ -1,16 +1,29 @@
 import type { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 
-function protect(req: Request, res: Response, next: NextFunction) {
-  const loggedIn = process.env.LOGGED_IN === "true";
-
-  if (loggedIn) {
+function protect(
+  req: Request  ,
+  res: Response,
+  next: NextFunction
+) {
+  const token = req.cookies.myJwtCookie;
+  if (!token) {
     return res.json({
       success: false,
-      message: "are you fool",
+      message: "Unauthorised",
     });
   }
-
-  next();
+  const JWT_SECRET = process.env.JWT_SECRET || "";
+  try {
+    const payload = jwt.verify(token, JWT_SECRET);
+    (req as any).user = payload;
+    next();
+  } catch (error) {
+    return res.json({
+      success: false,
+      message: "expired / invalid token",
+    });
+  }
 }
 
 export default protect;
