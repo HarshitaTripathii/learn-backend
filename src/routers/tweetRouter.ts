@@ -5,10 +5,11 @@ import {
   getAllTweet,
   updateTweet,
 } from "../controllers/tweetController";
+import protect from "../middlewares/protect";
 
 const tweetRouter = Router();
 
-tweetRouter.post("/create", createTweet);
+tweetRouter.post("/create", protect, createTweet);
 tweetRouter.get("/", getAllTweet);
 tweetRouter.put("/:id", updateTweet);
 tweetRouter.delete("/:id", deleteTweet);

@@ -3,9 +3,13 @@ import prisma from "../lib/prisma";
 
 async function createTweet(req: Request, res: Response) {
   const { content } = req.body;
+  //   const {userId}=req.user as {req:{user:{userId:string}}};
+  //   const {userId}=(req as {user:{userId:string}} ).user ;
+  const { userId }: { userId: string } = (req as any).user;
   await prisma.tweet.create({
     data: {
       content,
+      userId,
     },
   });
   return res.json({
@@ -68,4 +72,4 @@ async function deleteTweet(req: Request, res: Response) {
   });
 }
 
-export { createTweet, getAllTweet, updateTweet, deleteTweet};
+export { createTweet, getAllTweet, updateTweet, deleteTweet };
