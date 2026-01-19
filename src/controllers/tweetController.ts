@@ -18,6 +18,20 @@ async function createTweet(req: Request, res: Response) {
   });
 }
 
+async function getUserTweets(req: Request, res: Response) {
+  //   const { content } = req.body;
+  const { userId }: { userId: string } = (req as any).user;
+  const tweets = await prisma.tweet.findMany({
+    where: {
+      userId,
+    },
+  });
+  return res.json({
+    success: true,
+    data: tweets,
+  });
+}
+
 async function getAllTweet(req: Request, res: Response) {
   //   const { content } = req.body;
   const tweets = await prisma.tweet.findMany();
@@ -72,4 +86,4 @@ async function deleteTweet(req: Request, res: Response) {
   });
 }
 
-export { createTweet, getAllTweet, updateTweet, deleteTweet };
+export { createTweet, getAllTweet, updateTweet, deleteTweet, getUserTweets};

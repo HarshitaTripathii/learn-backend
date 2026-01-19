@@ -3,6 +3,7 @@ import {
   createTweet,
   deleteTweet,
   getAllTweet,
+  getUserTweets,
   updateTweet,
 } from "../controllers/tweetController";
 import protect from "../middlewares/protect";
@@ -13,5 +14,6 @@ tweetRouter.post("/create", protect, createTweet);
 tweetRouter.get("/", getAllTweet);
 tweetRouter.put("/:id", updateTweet);
 tweetRouter.delete("/:id", deleteTweet);
+tweetRouter.get("/me", protect, getUserTweets);
 
 export default tweetRouter;
