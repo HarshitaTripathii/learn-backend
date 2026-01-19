@@ -10,6 +10,7 @@ function hello(req: Request, res: Response) {
   });
 }
 
+const JWT_SECRET = process.env.JWT_SECRET || "";
 async function signUp(req: Request, res: Response) {
   // null check for  NAME, EMAIL, PASSWORD, CONFIRM PASSWORD
   const { name, email, password, confirmPassword } = req.body;
@@ -41,12 +42,33 @@ async function signUp(req: Request, res: Response) {
   }
   const hashedPassword = await bcrypt.hash(password, 8);
   // add user to the db
-  await prisma.user.create({
+  const newUser = await prisma.user.create({
     data: {
       email,
       name,
       password: hashedPassword,
     },
+  });
+
+  // The .create() method returns the user object it just created (including the id).
+  // You can use that directly.
+  // keep the new user log in
+  // get the user id, to make the token
+
+  // now make a token to be sent to client browser in cookie
+  const token = jwt.sign(
+    {
+      userId: newUser.id,
+    },
+    JWT_SECRET,
+    { expiresIn: "7d" },
+  );
+
+  // set this token on cookie
+  res.cookie("myJwtCookie", token, {
+    secure: false,
+    httpOnly: true,
+    maxAge: 3600,
   });
 
   return res.json({
@@ -55,7 +77,7 @@ async function signUp(req: Request, res: Response) {
   });
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || "";
+// const JWT_SECRET = process.env.JWT_SECRET || "";
 
 async function logIn(req: Request, res: Response) {
   // check if user exists in DB by email
@@ -85,7 +107,7 @@ async function logIn(req: Request, res: Response) {
       userId: user.id,
     },
     JWT_SECRET,
-    { expiresIn: "7d" }
+    { expiresIn: "7d" },
   );
   // set this token on cookie, on client side
   res.cookie("myJwtCookie", token, {
