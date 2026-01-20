@@ -59,6 +59,7 @@ async function signUp(req: Request, res: Response) {
   const token = jwt.sign(
     {
       userId: newUser.id,
+      role: newUser.role,
     },
     JWT_SECRET,
     { expiresIn: "7d" },
@@ -105,6 +106,7 @@ async function logIn(req: Request, res: Response) {
   const token = jwt.sign(
     {
       userId: user.id,
+      role: user.role,
     },
     JWT_SECRET,
     { expiresIn: "7d" },
