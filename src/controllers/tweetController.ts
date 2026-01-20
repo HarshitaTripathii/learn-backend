@@ -44,6 +44,7 @@ async function getAllTweet(req: Request, res: Response) {
 async function updateTweet(req: Request, res: Response) {
   // get the id from params
   const contId = req.params.id;
+  const { userId }: { userId: string } = (req as any).user;
 
   // get the new content from the body
   const { newContent } = req.body;
@@ -54,9 +55,10 @@ async function updateTweet(req: Request, res: Response) {
     });
   }
 
-  await prisma.tweet.update({
+  await prisma.tweet.updateMany({
     where: {
       id: contId as string,
+      userId,
     },
     data: {
       content: newContent,
@@ -73,9 +75,11 @@ async function updateTweet(req: Request, res: Response) {
 async function deleteTweet(req: Request, res: Response) {
   // get the id from params
   const contId = req.params.id;
-  await prisma.tweet.delete({
+  const { userId }: { userId: string } = (req as any).user;
+  await prisma.tweet.deleteMany({
     where: {
       id: contId as string,
+      userId,
     },
   });
 
@@ -86,4 +90,4 @@ async function deleteTweet(req: Request, res: Response) {
   });
 }
 
-export { createTweet, getAllTweet, updateTweet, deleteTweet, getUserTweets};
+export { createTweet, getAllTweet, updateTweet, deleteTweet, getUserTweets };
