@@ -14,13 +14,15 @@ async function createUrl(req: Request, res: Response) {
   });
 }
 
+const n=0;
+
 async function getShortLink(req: Request, res: Response) {
   const urlId = String(req.params.id);
   const url = await prisma.url.findFirst({
     where: {
       id: urlId,
     },
-  });
+});
   if (!url) {
     return res.json({
       success: false,

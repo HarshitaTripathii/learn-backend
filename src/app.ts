@@ -5,12 +5,13 @@ import cookieParser from "cookie-parser";
 import tweetRouter from "./routers/tweetRouter";
 import productRouter from "./routers/productRouter";
 import urlRouter from "./routers/urlRouter";
+import { ipRateLimiter } from "./middlewares/rateLimiter";
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-
+app.use(ipRateLimiter);
 app.get("/", (req, res) => {
   return res.json({
     success: true,
