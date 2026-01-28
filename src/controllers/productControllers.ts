@@ -19,7 +19,11 @@ async function createProduct(req: Request, res: Response) {
 
 async function getAllProducts(req: Request, res: Response) {
   //   const { content } = req.body;
-  const cacheKey = "products:getAll";
+  const page = Number(req.query.page) || 1;
+  const take = 5;
+  const skip = (page - 1) * take;
+  const search = (req.query.search as string) || undefined;
+  const cacheKey = `products:getAll:page:${page}:search:${search || "all"}`;
   const cachedProduct = cache.get(cacheKey);
   if (cachedProduct) {
     console.log("cache hit");
@@ -28,7 +32,16 @@ async function getAllProducts(req: Request, res: Response) {
       data: cachedProduct,
     });
   }
-  const products = await prisma.product.findMany();
+  const products = await prisma.product.findMany({
+    where: {
+      name: {
+        contains: search,
+        mode: "insensitive",
+      },
+    },
+    take,
+    skip,
+  });
   cache.set(cacheKey, products);
   console.log("cache miss");
   return res.json({

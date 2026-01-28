@@ -10,7 +10,7 @@ function adminProtect(req: Request, res: Response, next: NextFunction) {
   } catch (error) {
     return res.json({
       success: false,
-      message: "expired / invalid token",
+      message: "invalid token",
     });
   }
 }
